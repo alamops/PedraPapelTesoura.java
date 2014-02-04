@@ -32,7 +32,7 @@ public class Jogo
 				DataOutputStream stream_saida = new DataOutputStream(novaConexao.getOutputStream());
 				
 				//Pedir Nome
-				String nome = null;
+				String nome = stream_entrada.readUTF();
 				
 				//Cria objeto Jogador
 				Player novoJogador = new Player(nome, novaConexao, stream_entrada, stream_saida);
@@ -41,6 +41,7 @@ public class Jogo
 				listaJogadores.add(novoJogador);
 				
 				//envia mensagem para aguardar restante dos jogador
+				stream_saida.writeUTF("Aguardando adversário...");
 				
 				contPlayers++;
 			}
@@ -50,6 +51,10 @@ public class Jogo
 				return;
 			}
 		}
+		
+		//Jogando...
+		//inicia partida
+		//CLASSE PARTIDA
 	}
 
 }
