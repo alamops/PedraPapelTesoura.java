@@ -1,12 +1,15 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class Jogo
 {
+	static final int NUM_MAX_PLAYERS = 2;
 	
 	public static void main(String[] args)
 	{
 		ServerSocket serverSocket;
+		ArrayList<Player> listaJogadores = new ArrayList<Player>();
 		int contPlayers = 0;
 		
 		try
@@ -19,13 +22,25 @@ public class Jogo
 			return;
 		}
 		
-		while(contPlayers < 2)
+		while(contPlayers < NUM_MAX_PLAYERS)
 		{
 			try
 			{
+				//abre socket e streams de entrada e saida
 				Socket novaConexao = serverSocket.accept();
+				DataInputStream stream_entrada = new DataInputStream(novaConexao.getInputStream());
+				DataOutputStream stream_saida = new DataOutputStream(novaConexao.getOutputStream());
 				
-				//criar novo player
+				//Pedir Nome
+				String nome = null;
+				
+				//Cria objeto Jogador
+				Player novoJogador = new Player(nome, novaConexao, stream_entrada, stream_saida);
+				
+				//add jogador a lista de jogadores online
+				listaJogadores.add(novoJogador);
+				
+				//envia mensagem para aguardar restante dos jogador
 				
 				contPlayers++;
 			}
