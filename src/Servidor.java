@@ -20,7 +20,7 @@ public class Servidor
 		}
 	}
 	
-	static public Escolha analisaPartida(ArrayList<Player> listaJogadores)
+	static public void analisaPartida(ArrayList<Player> listaJogadores)
 	{
 		ArrayList<Escolha> escolhas = new ArrayList<Escolha>();
 		
@@ -51,8 +51,6 @@ public class Servidor
 				}
 			}
 		}
-		
-		return escolhaGanhadora;
 	}
 	
 	public static void main(String[] args)
@@ -109,7 +107,7 @@ public class Servidor
 		rodaPartida(listaJogadores);
 		
 		//Analisa as escolhas dos jogadores
-		escolhaGanhadora = analisaPartida(listaJogadores);
+		analisaPartida(listaJogadores);
 		
 		
 	}
