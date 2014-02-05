@@ -45,6 +45,11 @@ public class Player extends Thread
 		return this.escolha;
 	}
 	
+	public int getHash()
+	{
+		return this.hashCode();
+	}
+	
 	public void addPonto()
 	{
 		this.pontuacao++;

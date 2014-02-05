@@ -8,12 +8,51 @@ public class Servidor
 {
 	static final int NUM_MAX_PLAYERS = 2;
 	
+	String winner;
+	static boolean empate = false;
+	static Escolha escolhaGanhadora = null;
+	
 	static public void rodaPartida(ArrayList<Player> listaJogadores)
 	{
 		for(Player p : listaJogadores)
 		{
 			p.start();
 		}
+	}
+	
+	static public Escolha analisaPartida(ArrayList<Player> listaJogadores)
+	{
+		ArrayList<Escolha> escolhas = new ArrayList<Escolha>();
+		
+		//Pega as escolhas dos jogadores e atribui a uma lista
+		for(Player p : listaJogadores)
+		{
+			escolhas.add(p.getEscolha());
+		}
+		
+		//Compara cada escolha, sobrando apenas a vitoriosa ou um empate
+		for(Escolha e : escolhas)
+		{
+			if(escolhaGanhadora == null)
+				escolhaGanhadora = e;
+			else
+			{
+				if(escolhaGanhadora.getType() == e.getType())
+				{
+					empate = true;
+				}
+				else
+				{
+					if(escolhaGanhadora.getWinner() == e.getLoser())
+					{
+						escolhaGanhadora = e;
+						empate = false;
+					}
+				}
+			}
+		}
+		
+		return escolhaGanhadora;
 	}
 	
 	public static void main(String[] args)
@@ -70,7 +109,9 @@ public class Servidor
 		rodaPartida(listaJogadores);
 		
 		//Analisa as escolhas dos jogadores
-		analisaPartida(listaJogadores);
+		escolhaGanhadora = analisaPartida(listaJogadores);
+		
+		
 	}
 
 }
