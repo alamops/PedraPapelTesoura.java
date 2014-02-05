@@ -8,6 +8,14 @@ public class Servidor
 {
 	static final int NUM_MAX_PLAYERS = 2;
 	
+	static public void rodaPartida(ArrayList<Player> listaJogadores)
+	{
+		for(Player p : listaJogadores)
+		{
+			p.start();
+		}
+	}
+	
 	public static void main(String[] args)
 	{
 		ServerSocket serverSocket;
@@ -58,8 +66,11 @@ public class Servidor
 		}
 		
 		//Jogando...
-		//inicia partida
-		//CLASSE PARTIDA
+		//Roda solicitações dos Players
+		rodaPartida(listaJogadores);
+		
+		//Analisa as escolhas dos jogadores
+		analisaPartida(listaJogadores);
 	}
 
 }

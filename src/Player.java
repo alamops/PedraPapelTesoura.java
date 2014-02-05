@@ -14,8 +14,6 @@ public class Player extends Thread
 	public ObjectOutputStream object_saida;
 	public BlockingQueue<Escolha> partida;
 	
-	private volatile boolean isRunning = true;
-	
 	public Player(String nome)
 	{
 		this.nome = nome;
@@ -55,37 +53,30 @@ public class Player extends Thread
 	@Override
 	public void run()
 	{
-		while(isRunning)
+		try
 		{
-			try
-			{
-				//Envia o sinal para o player fazer sua escolha
-				this.stream_saida.writeInt(1);
-				
-				//Recebe a escolha do Player
-				this.escolha = (Escolha) this.object_entrada.readObject();
-				
-				//Define o este player como dono da escolha
-				this.escolha.setDono(this);
-				
-				//Adiciona na partida
-				partida.put(this.escolha);
-			}
-			catch(IOException ex)
-			{
-				System.out.println("Um jogador se retirou");
-				break;
-			}
-			catch(Exception ex)
-			{
-				System.out.println("Impossível de interpretar a escolha deste player.");
-				break;
-			}
+			//Envia o sinal para o player fazer sua escolha
+			this.stream_saida.writeInt(1);
+			
+			//Recebe a escolha do Player
+			this.escolha = (Escolha) this.object_entrada.readObject();
+			
+			//Define o este player como dono da escolha
+			this.escolha.setDono(this);
+			
+			//Adiciona na partida
+			partida.put(this.escolha);
+		}
+		catch(IOException ex)
+		{
+			System.out.println("Um jogador se retirou");
+			return;
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Impossível de interpretar a escolha deste player.");
+			return;
 		}
 	}
 	
-	public void kill()
-	{
-		this.isRunning = false;
-	}
 }
