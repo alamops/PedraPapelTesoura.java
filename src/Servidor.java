@@ -43,7 +43,7 @@ public class Servidor
 				}
 				else
 				{
-					if(escolhaGanhadora.getWinner() == e.getLoser())
+					if(escolhaGanhadora.getWinner() == e.getType())
 					{
 						escolhaGanhadora = e;
 						empate = false;
@@ -68,7 +68,7 @@ public class Servidor
 		}
 		catch (IOException ex)
 		{
-			System.out.println("Não foi possível abrir o ServerSocket!");
+			System.out.println("Nï¿½o foi possï¿½vel abrir o ServerSocket!");
 			return;
 		}
 		
@@ -93,19 +93,19 @@ public class Servidor
 				listaJogadores.add(novoJogador);
 				
 				//envia mensagem para aguardar restante dos jogador
-				stream_saida.writeUTF("Aguardando adversário...");
+				stream_saida.writeUTF("Aguardando adversï¿½rio...");
 				
 				contPlayers++;
 			}
 			catch(IOException ex)
 			{
-				System.out.println("Não foi possível abrir um novo socket!");
+				System.out.println("Nï¿½o foi possï¿½vel abrir um novo socket!");
 				return;
 			}
 		}
 		
 		//Jogando...
-		//Roda solicitações dos Players
+		//Roda solicitaï¿½ï¿½es dos Players
 		rodaPartida(listaJogadores);
 		
 		//Analisa as escolhas dos jogadores
