@@ -1,6 +1,12 @@
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 public class Cliente {
 
@@ -18,8 +24,9 @@ public class Cliente {
 			
 			//Solicita nome
 			Scanner scan = new Scanner(System.in);
-			System.out.println("Escreva seu nome: ");
-			String nome = scan.next();
+			//System.out.println("Escreva seu nome: ");
+			//String nome = scan.nextLine();
+			String nome = JOptionPane.showInputDialog("Qual o seu nome?");
 			
 			//Envia nome
 			data_output.writeUTF(nome);
@@ -35,58 +42,17 @@ public class Cliente {
 				switch(opcaoServidor)
 				{
 					case 1:
-						//lança opções
-							System.out.println("Faça sua escolha: ");
-							System.out.println("1 -> Pedra");
-							System.out.println("2 -> Papel");
-							System.out.println("3 -> Tesoura");
-							System.out.println("0 -> Sair");
-							opcaoPlayer = scan.nextInt();
-						
-						//Interpreta escolha do jogador
-							switch(opcaoPlayer)
-							{
-								case 1:
-										escolhaPlayer = new Pedra();
-									break;
-									
-								case 2:
-										escolhaPlayer = new Papel();
-									break;
-								
-								case 3:
-										escolhaPlayer = new Tesoura();
-									break;
-									
-								case 0:
-										sair = true;
-									break;
-									
-								default:
-									escolhaPlayer = new Pedra();
-							}
-							
-						//Define escolha do usuário
-							if(sair)
-							{
-								System.out.println("Saindo do servidor...");
-								novaConexao.close();
-								scan.close();
-							}
-							else
-							{
-								data_output.writeUTF(escolhaPlayer.getType());
-							}
+						new Interface(data_input, data_output, escolhaPlayer);
 						break;
 					
 					case 99:
-							System.out.println("Aguardando o adversário...");
+							JOptionPane.showMessageDialog(null, "Aguardando o adversário...");
 						break;
 				}
 			}
 			
 			//Pegando os resultados
-			System.out.println(data_input.readUTF());
+			JOptionPane.showMessageDialog(null, data_input.readUTF());
 			
 			scan.close();
 			novaConexao.close();
