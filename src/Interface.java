@@ -77,8 +77,8 @@ public class Interface extends JFrame {
 	}
 	
 	public void pegarResultado() {
+		//JOptionPane.showMessageDialog(null, "Aguardando escolha do oponente...");
 		this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-		JOptionPane.showMessageDialog(null, "Aguardando escolha do oponente...");
 	}
 	
 	class BotaoPedraListener implements ActionListener {
@@ -88,7 +88,7 @@ public class Interface extends JFrame {
 			escolha = new Pedra();
 			try {
 				data_output.writeUTF(escolha.getType());
-				JOptionPane.showMessageDialog(null, "Você escolheu Pedra!");
+				//JOptionPane.showMessageDialog(null, "Você escolheu Pedra!");
 				//JOptionPane.showMessageDialog(null, "Aguardando escolha do oponente...");
 				fechar();
 			} catch (IOException e1) {
@@ -105,7 +105,7 @@ public class Interface extends JFrame {
 			escolha = new Papel();
 			try {
 				data_output.writeUTF(escolha.getType());
-				JOptionPane.showMessageDialog(null, "Você escolheu Papel!");
+				//JOptionPane.showMessageDialog(null, "Você escolheu Papel!");
 				//JOptionPane.showMessageDialog(null, "Aguardando escolha do oponente...");
 				fechar();
 			} catch (IOException e1) {
@@ -122,7 +122,7 @@ public class Interface extends JFrame {
 			escolha = new Tesoura();
 			try {
 				data_output.writeUTF(escolha.getType());
-				JOptionPane.showMessageDialog(null, "Você escolheu Tesoura!");
+				//JOptionPane.showMessageDialog(null, "Você escolheu Tesoura!");
 				//JOptionPane.showMessageDialog(null, "Aguardando escolha do oponente...");
 				fechar();
 			} catch (IOException e1) {
