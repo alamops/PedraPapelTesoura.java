@@ -1,8 +1,9 @@
 
 public abstract class Escolha
 {
-	public abstract Class<? extends Escolha> getWinner();
-	public abstract Class<? extends Escolha> getLoser();
-	public abstract Class<? extends Escolha> getType();
+	public abstract String getWinner();
+	public abstract String getLoser();
+	public abstract String getType();
 	public abstract void setDono(Player dono);
+	public abstract Player getDono();
 }

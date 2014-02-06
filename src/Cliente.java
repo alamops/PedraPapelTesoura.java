@@ -9,17 +9,12 @@ public class Cliente {
 		{
 			//Criar socket com servidor
 			Socket novaConexao = new Socket("127.0.0.1", 12345);
-			Escolha escolhaPlayer;
+			Escolha escolhaPlayer = null;
 			boolean sair = false;
 			
 			//Cria variaves de strams
-			DataInputStream data_input;
-			DataOutputStream data_output;
-			ObjectInputStream object_input;
-			ObjectOutputStream object_output;
-			
-			//Cria streams de entrada e saida
-			data_output = new DataOutputStream(novaConexao.getOutputStream());
+			DataInputStream data_input = new DataInputStream(novaConexao.getInputStream());;
+			DataOutputStream data_output = new DataOutputStream(novaConexao.getOutputStream());;
 			
 			//Solicita nome
 			Scanner scan = new Scanner(System.in);
@@ -28,20 +23,14 @@ public class Cliente {
 			
 			//Envia nome
 			data_output.writeUTF(nome);
-			data_output.close();
-			
-			//loop para aguardar adversario
-			//
 			
 			//loop para o jogo
-			data_input = new DataInputStream(novaConexao.getInputStream());
 			int opcaoServidor = -1;
 			int opcaoPlayer = -1;
-			while(true)
+			while(opcaoServidor != 1 && opcaoPlayer != 0)
 			{
 				//Le o sinal vindo do servidor
 				opcaoServidor = data_input.readInt();
-				data_input.close();
 				
 				switch(opcaoServidor)
 				{
@@ -84,15 +73,27 @@ public class Cliente {
 								novaConexao.close();
 								scan.close();
 							}
+							else
+							{
+								data_output.writeUTF(escolhaPlayer.getType());
+							}
+						break;
+					
+					case 99:
+							System.out.println("Aguardando o adversário...");
 						break;
 				}
 			}
-			//novaConexao.close();
-			//scan.close();
+			
+			//Pegando os resultados
+			System.out.println(data_input.readUTF());
+			
+			scan.close();
+			novaConexao.close();
 		}
 		catch (Exception e)
 		{
-			System.out.println("Cliente1: " + "Não foi possível estabelecer uma conexão com o servidor.");
+			System.out.println("Fim da partida!");
 			return;
 		}
 	}

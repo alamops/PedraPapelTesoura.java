@@ -11,9 +11,8 @@ public class Player extends Thread
 	public Socket conexao;
 	public DataInputStream data_input;
 	public DataOutputStream data_output;
-	public ObjectInputStream object_input;
-	public ObjectOutputStream object_output;
 	public BlockingQueue<Escolha> partida;
+	//public int partida;
 	
 	public Player(ServerSocket serverSocket)
 	{
@@ -21,6 +20,9 @@ public class Player extends Thread
 		try
 		{
 			this.conexao = this.serverSocket.accept();
+			
+			this.data_input = new DataInputStream(this.conexao.getInputStream());
+			this.data_output = new DataOutputStream(this.conexao.getOutputStream());
 		}
 		catch(IOException e)
 		{
@@ -33,19 +35,17 @@ public class Player extends Thread
 		this.nome = nome;
 	}
 	
-	public Player(String nome, Socket conexao, BlockingQueue<Escolha> partida)
-	{
-		this.nome = nome;
-		this.conexao = conexao;
-		this.partida = partida;
-	}
+	//public Player(String nome, Socket conexao, BlockingQueue<Escolha> partida)
+	//{
+	//this.nome = nome;
+	//this.conexao = conexao;
+	//this.partida = partida;
+	//}
 	
-	public void pedirNome() throws IOException
+	public void pedirNome() throws IOException, ClassNotFoundException
 	{
-		this.data_input = new DataInputStream(this.conexao.getInputStream());
-		String nome = (String) this.data_input.readUTF();
+		String nome = this.data_input.readUTF();
 		System.out.println(nome + " entrou na partida!");
-		this.data_input.close();
 		
 		this.nome = nome;
 	}
@@ -53,6 +53,12 @@ public class Player extends Thread
 	public String getNome()
 	{
 		return this.nome;
+	}
+	
+	public void anunciaResultado(Player p, Escolha e, String situacao) throws IOException
+	{
+		String resultado = "Você " + situacao + " de " + p.getNome() + " que escolheu " + e.getType();
+		this.data_output.writeUTF(resultado);
 	}
 	
 	public void selecionarPartida(BlockingQueue<Escolha> partida)
@@ -84,9 +90,7 @@ public class Player extends Thread
 	{
 		try
 		{
-			this.data_output = new DataOutputStream(this.conexao.getOutputStream());
 			this.data_output.writeInt(99);
-			this.data_output.close();
 		}
 		catch(IOException e)
 		{
@@ -100,20 +104,36 @@ public class Player extends Thread
 		try
 		{
 			//Envia o sinal para o player fazer sua escolha
-			this.data_output = new DataOutputStream(this.conexao.getOutputStream());
 			this.data_output.writeInt(1);
-			this.data_output.close();
 			
 			//Recebe a escolha do Player
-			this.object_input = new ObjectInputStream(this.conexao.getInputStream());
-			this.escolha = (Escolha) this.object_input.readObject();
-			this.object_input.close();
+			String escolhaPlayer = this.data_input.readUTF();
+			System.out.println(this.nome + " escolheu " + escolhaPlayer);
+			
+			switch(escolhaPlayer)
+			{
+				case "Pedra":
+					this.escolha = new Pedra();
+					break;
+					
+				case "Papel":
+					this.escolha = new Papel();
+					break;
+					
+				case "Tesoura":
+					this.escolha = new Tesoura();
+					break;
+			}
+			System.out.println(this.nome + " escolha com Type " + this.escolha.getType());
 			
 			//Define o este player como dono da escolha
 			this.escolha.setDono(this);
+			System.out.println(this.nome + " o dono da escolha é " + this.escolha.getDono().getNome());
 			
 			//Adiciona na partida
 			partida.put(this.escolha);
+			System.out.println(this.nome + " escolha adicionada na partida " + this.escolha.getType());
+			//this.partida++;
 		}
 		catch(IOException ex)
 		{

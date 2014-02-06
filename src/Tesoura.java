@@ -2,8 +2,8 @@
 public class Tesoura extends Escolha
 {
 	public String nome = "Tesoura";
-	Pedra winner = new Pedra();
-	Papel loser = new Papel();
+	String winner = Pedra.class.getName();
+	String loser = Papel.class.getName();
 
 	public Player dono;
 	
@@ -14,20 +14,26 @@ public class Tesoura extends Escolha
 	}
 	
 	@Override
-	public Class<? extends Escolha> getWinner()
+	public Player getDono()
 	{
-		return winner.getClass();
+		return this.dono;
 	}
 	
 	@Override
-	public Class<? extends Escolha> getLoser()
+	public String getWinner()
 	{
-		return loser.getClass();
+		return winner;
 	}
 	
 	@Override
-	public Class<? extends Escolha> getType()
+	public String getLoser()
 	{
-		return this.getClass();
+		return loser;
+	}
+	
+	@Override
+	public String getType()
+	{
+		return this.getClass().getName();
 	}
 }

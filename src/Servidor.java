@@ -8,12 +8,13 @@ public class Servidor
 {
 	static final int NUM_MAX_PLAYERS = 2;
 	
-	String winner;
+	static Player winner, loser;
 	static boolean empate = false;
-	static Escolha escolhaGanhadora = null;
+	static Escolha escolhaGanhadora, escolhaPerdedora = null;
 	
 	static public void rodaPartida(ArrayList<Player> listaJogadores)
 	{
+		System.out.println("Rodando a partida...");
 		for(Player p : listaJogadores)
 		{
 			p.start();
@@ -23,7 +24,7 @@ public class Servidor
 	static public void analisaPartida(ArrayList<Player> listaJogadores)
 	{
 		ArrayList<Escolha> escolhas = new ArrayList<Escolha>();
-		
+		System.out.println("Analisando a partida...");
 		//Pega as escolhas dos jogadores e atribui a uma lista
 		for(Player p : listaJogadores)
 		{
@@ -45,10 +46,38 @@ public class Servidor
 				{
 					if(escolhaGanhadora.getWinner() == e.getType())
 					{
+						escolhaPerdedora = escolhaGanhadora;
 						escolhaGanhadora = e;
 						empate = false;
 					}
+					else
+					{
+						escolhaPerdedora = e;
+						empate = false;
+					}
 				}
+			}
+		}
+		
+		//seleciona winner se empate = false
+		if(!empate)
+		{
+			winner = escolhaGanhadora.getDono();
+			loser = escolhaPerdedora.getDono();
+		}
+	}
+	
+	static public void anunciaResultado(ArrayList<Player> listaJogadores) throws IOException
+	{
+		for(Player p : listaJogadores)
+		{
+			if(winner.hashCode() == p.hashCode())
+			{
+				p.anunciaResultado(loser, escolhaPerdedora, "ganhou");
+			}
+			else
+			{
+				p.anunciaResultado(winner, escolhaGanhadora, "perdeu");
 			}
 		}
 	}
@@ -69,23 +98,16 @@ public class Servidor
 				try
 				{
 					//abre socket
-					//Socket novaConexao = serverSocket.accept();
 					Player novoJogador = new Player(serverSocket);
-					
-					//Cria streams de entrada e saida
-					//DataInputStream data_input;
 					
 					//Pedir Nome
 					novoJogador.pedirNome();
 					
 					//Cria objeto Jogador
-					//Player novoJogador = new Player(nome, novaConexao, partida);
 					novoJogador.selecionarPartida(partida);
-					//System.out.println("added novo jogador");
 					
 					//add jogador a lista de jogadores online
 					listaJogadores.add(novoJogador);
-					//System.out.println("colocado na lista");
 					contPlayers++;
 					
 					novoJogador.esperar();
@@ -101,14 +123,32 @@ public class Servidor
 			//Roda solicitações dos Players
 			rodaPartida(listaJogadores);
 			
+			//Aguarda as escolhas
+			int i = 0;
+			while(partida.size() < 2)
+			{
+				if(i == 0)
+				{
+					System.out.println("Aguardando escolhas");
+					i++;
+				}
+			}
+			
 			//Analisa as escolhas dos jogadores
-			//analisaPartida(listaJogadores);
+			analisaPartida(listaJogadores);
 			
 			//CONTINUAR
+			if(empate)
+			{
+				System.out.println("Empatou!");
+			}
+			else
+			{
+				anunciaResultado(listaJogadores);
+			}
 			
 			
-			
-			//serverSocket.close();
+			serverSocket.close();
 		}
 		catch (Exception ex)
 		{
