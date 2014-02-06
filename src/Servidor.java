@@ -1,8 +1,8 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Servidor
 {
@@ -62,36 +62,37 @@ public class Servidor
 		
 		try
 		{
-			serverSocket = new ServerSocket(5000);
+			serverSocket = new ServerSocket(12345);
 			
 			while(contPlayers < NUM_MAX_PLAYERS)
 			{
 				try
 				{
-					//abre socket e streams de entrada e saida
-					Socket novaConexao = serverSocket.accept();
-					DataInputStream stream_entrada = new DataInputStream(novaConexao.getInputStream());
-					DataOutputStream stream_saida = new DataOutputStream(novaConexao.getOutputStream());
-					ObjectInputStream object_entrada = new ObjectInputStream(novaConexao.getInputStream());
-					ObjectOutputStream object_saida = new ObjectOutputStream(novaConexao.getOutputStream());
+					//abre socket
+					//Socket novaConexao = serverSocket.accept();
+					Player novoJogador = new Player(serverSocket);
+					
+					//Cria streams de entrada e saida
+					//DataInputStream data_input;
 					
 					//Pedir Nome
-					String nome = stream_entrada.readUTF();
+					novoJogador.pedirNome();
 					
 					//Cria objeto Jogador
-					Player novoJogador = new Player(nome, novaConexao, stream_entrada, stream_saida, object_entrada, object_saida, partida);
+					//Player novoJogador = new Player(nome, novaConexao, partida);
+					novoJogador.selecionarPartida(partida);
+					//System.out.println("added novo jogador");
 					
 					//add jogador a lista de jogadores online
 					listaJogadores.add(novoJogador);
-					
-					//envia mensagem para aguardar restante dos jogador
-					stream_saida.writeUTF("Aguardando adversário...");
-					
+					//System.out.println("colocado na lista");
 					contPlayers++;
+					
+					novoJogador.esperar();
 				}
-				catch(IOException ex)
+				catch(Exception ex)
 				{
-					System.out.println("Não foi possível abrir um novo socket!");
+					System.out.println("Servidor1: " + ex.toString());
 					return;
 				}
 			}
@@ -101,13 +102,17 @@ public class Servidor
 			rodaPartida(listaJogadores);
 			
 			//Analisa as escolhas dos jogadores
-			analisaPartida(listaJogadores);
+			//analisaPartida(listaJogadores);
 			
 			//CONTINUAR
+			
+			
+			
+			//serverSocket.close();
 		}
-		catch (IOException ex)
+		catch (Exception ex)
 		{
-			System.out.println("Não foi possível abrir o ServerSocket!");
+			System.out.println("Servidor2: " + ex.toString());
 			return;
 		}
 	}

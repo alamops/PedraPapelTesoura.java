@@ -7,32 +7,57 @@ public class Player extends Thread
 	public String nome;
 	private Escolha escolha;
 	public int pontuacao = 0;
+	public ServerSocket serverSocket;
 	public Socket conexao;
-	public DataInputStream stream_entrada;
-	public DataOutputStream stream_saida;
-	public ObjectInputStream object_entrada;
-	public ObjectOutputStream object_saida;
+	public DataInputStream data_input;
+	public DataOutputStream data_output;
+	public ObjectInputStream object_input;
+	public ObjectOutputStream object_output;
 	public BlockingQueue<Escolha> partida;
+	
+	public Player(ServerSocket serverSocket)
+	{
+		this.serverSocket = serverSocket;
+		try
+		{
+			this.conexao = this.serverSocket.accept();
+		}
+		catch(IOException e)
+		{
+			System.out.println("Tentativa de adicionar jogador: " + e.toString());
+		}
+	}
 	
 	public Player(String nome)
 	{
 		this.nome = nome;
 	}
 	
-	public Player(String nome, Socket conexao, DataInputStream stream_entrada, DataOutputStream stream_saida, ObjectInputStream object_entrada, ObjectOutputStream object_saida, BlockingQueue<Escolha> partida)
+	public Player(String nome, Socket conexao, BlockingQueue<Escolha> partida)
 	{
 		this.nome = nome;
 		this.conexao = conexao;
-		this.stream_entrada = stream_entrada;
-		this.stream_saida = stream_saida;
-		this.object_entrada = object_entrada;
-		this.object_saida = object_saida;
 		this.partida = partida;
+	}
+	
+	public void pedirNome() throws IOException
+	{
+		this.data_input = new DataInputStream(this.conexao.getInputStream());
+		String nome = (String) this.data_input.readUTF();
+		System.out.println(nome + " entrou na partida!");
+		this.data_input.close();
+		
+		this.nome = nome;
 	}
 	
 	public String getNome()
 	{
 		return this.nome;
+	}
+	
+	public void selecionarPartida(BlockingQueue<Escolha> partida)
+	{
+		this.partida = partida;
 	}
 	
 	public void setEscolha(Escolha escolha)
@@ -55,16 +80,34 @@ public class Player extends Thread
 		this.pontuacao++;
 	}
 	
+	public void esperar()
+	{
+		try
+		{
+			this.data_output = new DataOutputStream(this.conexao.getOutputStream());
+			this.data_output.writeInt(99);
+			this.data_output.close();
+		}
+		catch(IOException e)
+		{
+			System.out.println("Tentativa de fazer player esperar: " + e.toString());
+		}
+	}
+	
 	@Override
 	public void run()
 	{
 		try
 		{
 			//Envia o sinal para o player fazer sua escolha
-			this.stream_saida.writeInt(1);
+			this.data_output = new DataOutputStream(this.conexao.getOutputStream());
+			this.data_output.writeInt(1);
+			this.data_output.close();
 			
 			//Recebe a escolha do Player
-			this.escolha = (Escolha) this.object_entrada.readObject();
+			this.object_input = new ObjectInputStream(this.conexao.getInputStream());
+			this.escolha = (Escolha) this.object_input.readObject();
+			this.object_input.close();
 			
 			//Define o este player como dono da escolha
 			this.escolha.setDono(this);
