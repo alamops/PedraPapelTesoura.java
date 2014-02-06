@@ -62,11 +62,11 @@ public class Servidor
 		
 		try
 		{
-			serverSocket = new ServerSocket(12345);
+			serverSocket = new ServerSocket(5000);
 		}
 		catch (IOException ex)
 		{
-			System.out.println("Nï¿½o foi possï¿½vel abrir o ServerSocket!");
+			System.out.println("Não foi possível abrir o ServerSocket!");
 			return;
 		}
 		
@@ -91,13 +91,13 @@ public class Servidor
 				listaJogadores.add(novoJogador);
 				
 				//envia mensagem para aguardar restante dos jogador
-				stream_saida.writeUTF("Aguardando adversï¿½rio...");
+				stream_saida.writeUTF("Aguardando adversário...");
 				
 				contPlayers++;
 			}
 			catch(IOException ex)
 			{
-				System.out.println("Nï¿½o foi possï¿½vel abrir um novo socket!");
+				System.out.println("Não foi possível abrir um novo socket!");
 				return;
 			}
 		}
