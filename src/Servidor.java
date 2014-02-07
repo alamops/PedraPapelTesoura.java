@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import javax.swing.JOptionPane;
+
 public class Servidor
 {
 	static final int NUM_MAX_PLAYERS = 2;
@@ -69,14 +71,20 @@ public class Servidor
 	
 	static public void anunciaResultado(ArrayList<Player> listaJogadores) throws IOException
 	{
+		System.out.println("Enviando resultados...");
 		for(Player p : listaJogadores)
 		{
-			if(winner.hashCode() == p.hashCode())
+			if(empate) {
+				p.anunciaEmpate();
+			}
+			else if(winner.hashCode() == p.hashCode())
 			{
+				System.out.println(winner.getNome() + " ganhou!");
 				p.anunciaResultado(loser, escolhaPerdedora, "ganhou");
 			}
 			else
 			{
+				System.out.println(loser.getNome() + " perdeu!");
 				p.anunciaResultado(winner, escolhaGanhadora, "perdeu");
 			}
 		}
@@ -92,6 +100,10 @@ public class Servidor
 		try
 		{
 			serverSocket = new ServerSocket(12345);
+			
+			JOptionPane.showMessageDialog(null, "Servidor iniciado.");
+			
+			System.out.println("Aguardando jogadores...");
 			
 			while(contPlayers < NUM_MAX_PLAYERS)
 			{
@@ -138,15 +150,16 @@ public class Servidor
 			analisaPartida(listaJogadores);
 			
 			//CONTINUAR
-			if(empate)
-			{
-				System.out.println("Empatou!");
-			}
-			else
-			{
+			//if(empate)
+			//{
+				//System.out.println("Empatou!");
+			//}
+			//else
+			//{
 				anunciaResultado(listaJogadores);
-			}
+			//}
 			
+			System.out.println("Partida finalizada!");
 			
 			serverSocket.close();
 		}

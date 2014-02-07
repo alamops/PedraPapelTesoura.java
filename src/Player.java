@@ -61,6 +61,12 @@ public class Player extends Thread
 		this.data_output.writeUTF(resultado);
 	}
 	
+	public void anunciaEmpate() throws IOException
+	{
+		String resultado = "Você empatou! Seu adversário também escolheu " + this.escolha.getType();
+		this.data_output.writeUTF(resultado);
+	}
+	
 	public void selecionarPartida(BlockingQueue<Escolha> partida)
 	{
 		this.partida = partida;

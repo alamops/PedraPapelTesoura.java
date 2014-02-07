@@ -32,8 +32,8 @@ public class Interface extends JFrame {
 	JButton pedra, papel, tesoura;
 	Escolha escolha;
 	
-	public Interface(DataInputStream data_input, DataOutputStream data_output, Escolha escolha) {
-		super("Pedra - Papel - Tesoura");
+	public Interface(String nomePlayer, DataInputStream data_input, DataOutputStream data_output, Escolha escolha) {
+		super(nomePlayer);
 		
 		this.data_input = data_input;
 		this.data_output = data_output;

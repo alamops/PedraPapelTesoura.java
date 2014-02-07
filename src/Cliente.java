@@ -9,14 +9,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Cliente {
+	
+	static Escolha escolhaPlayer = null;
+	static boolean sair = false;
 
 	public static void main(String[] args) {
 		try
 		{
 			//Criar socket com servidor
 			Socket novaConexao = new Socket("127.0.0.1", 12345);
-			Escolha escolhaPlayer = null;
-			boolean sair = false;
+			//Escolha escolhaPlayer = null;
+			//boolean sair = false;
 			
 			//Cria variaves de strams
 			DataInputStream data_input = new DataInputStream(novaConexao.getInputStream());;
@@ -42,11 +45,12 @@ public class Cliente {
 				switch(opcaoServidor)
 				{
 					case 1:
-						new Interface(data_input, data_output, escolhaPlayer);
+						new Interface(nome, data_input, data_output, escolhaPlayer);
 						break;
 					
 					case 99:
-							JOptionPane.showMessageDialog(null, "Aguardando o adversário...");
+							//JOptionPane.showMessageDialog(null, "Aguardando o adversário...");
+							System.out.println("Aguardando o adversário...");
 						break;
 				}
 			}
@@ -58,7 +62,7 @@ public class Cliente {
 			novaConexao.close();
 		}
 		catch (Exception e)
-		{
+		{		
 			System.out.println("Fim da partida!");
 			return;
 		}
